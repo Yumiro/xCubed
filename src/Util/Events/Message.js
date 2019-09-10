@@ -13,21 +13,18 @@ module.exports = (message) => {
     return message.channel.send('Hey! Please only use my commands in servers.')
   }
   const client = message.client;
-  const key = message.author.id
-  client.Prefix.ensure(message.guild.id, {
-    prefix: prefix
+  client.points.ensure(`${message.guild.id}-${message.author.id}`, {
+      user: message.author.id,
+      guild: message.guild.id,
+      points: 0,
+      level: 0
   });
-  client.Points.ensure(key, {
-    user: message.author.id,
-    points: 0,
-    level: 0,
-  })
   client.Credits.ensure(key, {
     Wallet: 500,
     lastUsed: null,
     Bank: 0,
     SecSys: false
-  })
+  });
   let currentLevel = Math.floor(client.Points.get(message.author.id).Points / 100)
   if (Number(currentLevel) >= 99) currentLevel = 99
   if (!NoXP4U.has(message.author.id)) {
@@ -35,7 +32,7 @@ module.exports = (message) => {
     client.Points.set(key, {
       points: client.Points.get(key).points + Math.floor(Math.random() * 8),
       level: currentLevel
-    })
+    });
     setTimeout(() => {
       NoXP4U.delete(message.author.id)
     }, 15000)
